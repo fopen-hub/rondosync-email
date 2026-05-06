@@ -9,6 +9,7 @@ dist/
 .tanstack/
 services/admin/src/routeTree.gen.ts
 scripts/config.toml
+*.emailflare.key
 services/worker/.wrangler
 services/worker/.localflare
 *.tsbuildinfo

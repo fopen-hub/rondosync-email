@@ -1,14 +1,21 @@
 # emailflare configuration
 # ─────────────────────────────────────────────────────────────────────────────
 # Copy this file to config.toml, fill in your values, then run:
-#   just setup
+#   just worker-setup
 #
 # Lines starting with # are comments. Leave a value blank ("") to be prompted
 # interactively when running the setup script.
 
 [deploy]
-# D1 database name (default: emailflare). Change only if you need a custom name.
-database_name = "emailflare"
+# D1 database name.
+database_name = "rondosync-email"
+
+# KV namespace name for rate limiting.
+kv_namespace_name = "rondosync-email-rate-limit"
+
+# Optional: set these to allow non-interactive setup.
+cloudflare_api_token = ""
+account_id = ""
 
 [secrets]
 # Password for the admin dashboard. Use a strong random string.

@@ -50,8 +50,8 @@ if (existsSync(CONFIG_FILE)) {
   process.stdout.write(`\x1b[33m  Copy scripts/config.example.toml → scripts/config.toml to skip prompts.\x1b[0m\n\n`);
 }
 
-const DB_NAME = cfg.deploy?.database_name || process.env.EMAILFLARE_DB_NAME || 'emailflare';
-const KV_NAME = 'emailflare-rate-limit';
+const DB_NAME = cfg.deploy?.database_name || process.env.EMAILFLARE_DB_NAME || 'rondosync-email';
+const KV_NAME = cfg.deploy?.kv_namespace_name || process.env.EMAILFLARE_KV_NAME || 'rondosync-email-rate-limit';
 
 // Inject deploy credentials so wrangler picks them up automatically
 if (cfg.deploy?.cloudflare_api_token) {
@@ -314,7 +314,10 @@ const SECRETS = [
 rl.close();
 
 for (const { name, label, cfgVal } of SECRETS) {
-  const value = (cfgVal ?? '').trim() || await promptSecret(label);
+  let value = (cfgVal ?? '').trim();
+  if (!value && process.stdin.isTTY) {
+    value = await promptSecret(label);
+  }
   if (!value.trim()) {
     warn(`${name} skipped (leaving blank).`);
     continue;
@@ -340,8 +343,8 @@ for (const { name, label, cfgVal } of SECRETS) {
 
 log('Building admin panel…');
 try {
-  run('pnpm install --frozen-lockfile', { cwd: ADMIN_DIR });
-  run('pnpm build', { cwd: ADMIN_DIR });
+  run('pnpm install --frozen-lockfile --ignore-workspace', { cwd: ADMIN_DIR });
+  run('pnpm --ignore-workspace run build', { cwd: ADMIN_DIR });
   ok('Admin panel built.');
 } catch (err) {
   die(`Admin build failed: ${err.message}`);

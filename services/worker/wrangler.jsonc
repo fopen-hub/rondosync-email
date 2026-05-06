@@ -27,13 +27,19 @@
   //        wrangler secret put ADMIN_ORIGIN       (e.g. "https://admin.example.com")
 
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "emailflare-worker",
+  "name": "rondosync-email",
   "main": "src/index.ts",
-  "compatibility_date": "2025-05-01",
+  "compatibility_date": "2026-05-06",
   "compatibility_flags": ["nodejs_compat"],
-  "account_id": "532cea73d241b8513e953d361cc25176",
-  "workers_dev": true,
+  "account_id": "10a234b2a48ef1d6d4f7935d8b900227",
+  "workers_dev": false,
   "preview_urls": false,
+  "routes": [
+    {
+      "pattern": "email.rondosync.com",
+      "custom_domain": true
+    }
+  ],
 
   "observability": {
     "enabled": true,
@@ -56,8 +62,8 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "emailflare",
-      "database_id": "569d845e-5691-4f71-84f6-e31a878e4bd6",
+      "database_name": "rondosync-email",
+      "database_id": "d9dd6bf5-38d2-4de7-9565-163b6e2bccba",
       "migrations_dir": "migrations"
     }
   ],
@@ -66,19 +72,9 @@
   "kv_namespaces": [
     {
       "binding": "RATE_LIMIT_KV",
-      "id": "dd700ff5c7fd4a77ae4acee19bfcd215"
+      "id": "c2f6600e3091482eb161ab3cb6c4d534"
     }
   ],
-
-  // Runtime env vars (Localflare reads vars from config for manifest visibility).
-  // Production values should be set with `wrangler secret put`.
-  "vars": {
-    "ADMIN_ORIGIN": "localhost:5173",
-    "ADMIN_TOKEN": "set-via-secret",
-    "SESSION_SECRET": "set-via-secret",
-    "CF_API_TOKEN": "set-via-secret",
-    "CF_ACCOUNT_ID": "set-via-secret"
-  },
 
   // Workers Rate Limiting for API key calls (100 req / 60s per key)
   // Requires Workers Paid plan. Remove this block to disable.
